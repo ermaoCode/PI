@@ -1,9 +1,7 @@
-The Protocol Informatics Framework
-Written by Marshall Beddoe <mbeddoe@baselineresearch.net>
-Copyright (c) 2004 Baseline Research
-----
+A copy and modification of [PI project](http://www.4tphi.net/~awalters/PI/PI.html).
+By Jennings Mao \< maojianling@ict.ac.cn \>
 
-Overview:
+# Overview
 
 The Protocol Informatics project is a software framework that allows for
 advanced sequence and protocol stream analysis by utilizing bioinformatics
@@ -14,31 +12,30 @@ understand the underlying structure of the otherwise random-looking data. The
 PI framework was designed for experimentation through the use of a widget-based
 component set.
 
-Requirements:
+# Requirements
 
-Python >= 2.3.4     http://www.python.org
-Numerical Python    http://www.stsci.edu/resources/software_hardware/numarray
-Pyrex               http://www.cosc.canterbury.ac.nz/~greg/python/Pyrex/
-Pcapy               http://oss.coresecurity.com/projects/pcapy.html
-Pydot               http://dkbza.org/pydot.html
+Python 
 
-This software has been tested and works correctly under:
-    - OpenBSD
-    - FreeBSD
-    - Linux
-    - MacOSX
+~~Numerical Python~~  (Too old version, already switched to "Numpy") for writing Cython modules
 
-Example usage: Analyzing the ICMP protocol
+[Pyrex]( http://www.cosc.canterbury.ac.nz/~greg/python/Pyrex/) for loading python extensions
+
+[Pcapy](http://oss.coresecurity.com/projects/pcapy.html) for analyzing pcap files
+
+[Pydot](http://dkbza.org/pydot.html)  for drawing phylogenetic tree
+
+
+# Example usage: Analyzing the ICMP protocol
 
 ICMP is a simple fixed length protocol.
 Let's use the PI framework to discover the format.
 
-Step 1: Gather 100 ICMP packets using tcpdump
-
+## Step 1: Gather 100 ICMP packets using tcpdump
+```
 # tcpdump -s 42 -c 100 -nl -w icmp.dump icmp
-
-Step 2: Run dump through PI prototype
-
+```
+## Step 2: Run dump through PI prototype
+```
 # ./main.py -g -p ./icmp.dump
 
 Protocol Informatics Prototype (v0.01 beta)
@@ -160,8 +157,8 @@ Ungapped Consensus:
 CONS x08 x00 x3f x18 x05 xbe x00 ???
 DT   BBB ZZZ BBB BBB BBB BBB ZZZ AAA
 MT   000 000 081 089 000 000 000 100
-
-Step 3: Analyze Consensus Sequence
+```
+## Step 3: Analyze Consensus Sequence
 
 Pay attention to datatype composition and mutation rate.
 
@@ -175,13 +172,13 @@ Offset 6: Zeroed data, 0% mutation rate
 Offset 7: ASCII data, 100% mutation rate
 
 Using this information we can construct the structure of the format:
-
+```
 [ 1 byte ] [ 1 byte ] [ 2 byte ] [ 2 byte ] [ 1 byte ] [ 1 byte ]
-
+```
 The real format of an ICMP message:
-
+```
 [ 1 byte ] [ 1 byte ] [ 2 byte ] [ 2 byte ] [ 2 byte ]
-
+```
 The reason PI made the mistake in identifying the last field was due to the
 fact that the last field in an ICMP packet is a 16 bit sequence identifier.
 We only gathered 100 packets therefore the greatest significant byte never
