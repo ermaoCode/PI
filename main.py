@@ -10,6 +10,7 @@
 
 from PI import *
 import sys, getopt
+import datetime
 
 def main():
 
@@ -143,4 +144,7 @@ def usage():
     sys.exit(-1)
 
 if __name__ == "__main__":
+    now = datetime.datetime.now()
     main()
+    end = datetime.datetime.now()
+    print ("Running " + str(end-now))
