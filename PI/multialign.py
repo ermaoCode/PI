@@ -68,6 +68,7 @@ class NeedlemanWunsch(Multialign):
 
         self._assign(self.tree)
         self._alignSum(self.tree, [])
+        self.aligned.sort(key=lambda seq: seq[0])
 
     def _assign(self, root):
         """Traverse tree and align sequences"""
@@ -95,7 +96,7 @@ class NeedlemanWunsch(Multialign):
             root.getLeft().setValue(nv1)
             root.getRight().setValue(nv2)
 
-            # Choose the sequence with least gaps
+            # Choose the sequence with least gaps ???
             if e1 < e2:
                 nseq = a1
             else:
