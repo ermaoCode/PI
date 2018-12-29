@@ -68,8 +68,6 @@ class Pcap(Input):
         if hdr.getlen() <= 0:
             return
 
-        # Increment packet counter
-        self.pktNumber += 1
 
         # Ethernet is a safe assumption
         offset = self.offset
@@ -119,6 +117,8 @@ class Pcap(Input):
             digitalSeq.append(ord(c))
 
         self.sequences.append((self.pktNumber, digitalSeq))
+        # Increment packet counter
+        self.pktNumber += 1
 
 class ASCII(Input):
 

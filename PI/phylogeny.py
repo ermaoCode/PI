@@ -71,7 +71,7 @@ class UPGMA(Phylogeny):
         # Place each sequence into individual tree node
         for i in range(len(self.sequences)):
             ntree = Tree()
-            ntree.setValue((i, 0, self.sequences[i], None))
+            ntree.setValue((self.sequences[i][0], 0, self.sequences[i][1], None))
             Cu.add(ntree)
 
         n = len(Cu) - 1

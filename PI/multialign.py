@@ -80,8 +80,8 @@ class NeedlemanWunsch(Multialign):
                 self._assign(root.getRight())
 
             # Get sequences
-            seq1 = root.getLeft().getValue()[2][1]
-            seq2 = root.getRight().getValue()[2][1]
+            seq1 = root.getLeft().getValue()[2]
+            seq2 = root.getRight().getValue()[2]
 
             (a1, a2, e1, e2, score, gaps) = \
                 align.NeedlemanWunsch(seq1, seq2, self.smx, 0, 0)
@@ -102,15 +102,15 @@ class NeedlemanWunsch(Multialign):
                 nseq = a2
 
             v1 = root.getValue()
-            nseq = (v1[0], nseq)
+            # nseq = (v1[0], nseq)
             nv1 = (v1[0], v1[1], nseq, v1[3])
             root.setValue(nv1)
 
     def _alignSum(self, root, edits):
 
         if root.getLeft() == None and root.getRight() == None:
-            seq1 = root.getValue()[2][1]
-            id = root.getValue()[2][0]
+            seq1 = root.getValue()[2]
+            id = root.getValue()[0]
             new = seq1
 
             for i in range(len(edits)):

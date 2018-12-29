@@ -91,16 +91,17 @@ class Tree:
 
         if root.getParent():
 
-            if root.getIsLeaf():
-                v1 = root.getValue()[2][0]
-            else:
-                v1 = root.getValue()[0]
+            # if root.getIsLeaf():
+            #     v1 = root.getValue()[2][0]
+            # else:
+            #     v1 = root.getValue()[0]
+            v1 = root.getValue()[0]
 
             weight = root.getValue()[1]
 
             v2 = root.getParent().getValue()[0]
 
-            l = "%.02f%%" % (weight * 100.0)
+            l = "%d-%.02f%%" % (v1, weight * 100.0)
 
             if v1 >= 10000:
                 node1 = Node(v1, shape="plaintext", ratio="auto", label=l)
