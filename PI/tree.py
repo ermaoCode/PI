@@ -89,40 +89,19 @@ class Tree:
 
     def _traverse(self, root):
 
-        if root.getParent():
-
-            # if root.getIsLeaf():
-            #     v1 = root.getValue()[2][0]
-            # else:
-            #     v1 = root.getValue()[0]
-            v1 = root.getValue()[0]
-
-            weight = root.getValue()[1]
-
-            v2 = root.getParent().getValue()[0]
-
-            l = "%d-%.02f%%" % (v1, weight * 100.0)
-
-            if v1 >= 10000:
-                node1 = Node(v1, shape="plaintext", ratio="auto", label=l)
-            else:
-                node1 = Node(v1, shape="house", ratio="auto")
-                node1.set("style", "filled")
-                node1.set("fillcolor", "cyan")
-
-            if v2 >= 10000:
-                weight = root.getParent().getValue()[1]
-                l = "%.02f%%" % (weight * 100.0)
-                node2 = Node(v2, shape="plaintext", ratio="auto", label=l)
-
-            if root.getIsLeaf():
-                self.subgraph.add_node(node1)
-
+        v1 = root.getValue()[0]
+        weight = root.getValue()[1]
+        if root.getIsLeaf():
+            node1 = Node(v1, shape="house", ratio="auto")
             self.graph.add_node(node1)
-            self.graph.add_node(node2)
+        else:
+            l = "%d-%.02f%%" % (v1, weight * 100.0)
+            node1 = Node(v1, shape="plaintext", ratio="auto", label=l)
+            self.graph.add_node(node1)
 
+        if root.getParent():
+            v2 = root.getParent().getValue()[0]
             edge = Edge(v2, v1)
-
             self.graph.add_edge(edge)
 
         if root.getLeft():
@@ -130,3 +109,4 @@ class Tree:
 
         if root.getRight():
             self._traverse(root.getRight())
+      
