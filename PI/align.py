@@ -5,7 +5,6 @@ import numpy
 # string seq2 : sequence 2
 # int    e    : Misplaced punishment
 def NeedlemanWunsch(seq1, seq2,S, g, e):
-
     edits1 = []
     edits2 = []
 
@@ -51,20 +50,22 @@ def NeedlemanWunsch(seq1, seq2,S, g, e):
 
             if v1 > m:
                 m = v1
+                direction = 1
 
             if v2 > m:
                 m = v2
+                direction = 2
 
             if v3 > m:
                 m = v3
-
-
-            if m == v1:
-                direction = direction | (1 << 0)
-            elif m == v2:
-                direction = direction | (1 << 1)
-            elif m == v3:
-                direction = direction | (1 << 2)
+                direction = 4
+            #
+            # if m == v1:
+            #     direction = direction | (1 << 0)
+            # elif m == v2:
+            #     direction = direction | (1 << 1)
+            # elif m == v3:
+            #     direction = direction | (1 << 2)
 
             if m >= t_max:
                 t_max = m
@@ -84,16 +85,17 @@ def NeedlemanWunsch(seq1, seq2,S, g, e):
 
     while i and j:
         data = table[i][j]
+        ni = nj = 0
 
         if data & (1 << 2):
             ni = i - 1
             nj = j
 
-        if data & (1 << 1):
+        elif data & (1 << 1):
             ni = i
             nj = j - 1
 
-        if data & (1 << 0):
+        elif data & (1 << 0):
             ni = i - 1
             nj = j - 1
 
@@ -113,29 +115,24 @@ def NeedlemanWunsch(seq1, seq2,S, g, e):
 
     while i and j:
         data = table[i][j]
+        ni = nj = 0
 
         if data & (1 << 2):
             ni = i - 1
             nj = j
             direction = (1 << 2)
+            s1 = s1 - 1
+            s2 = s2 - 1
 
-        if data & (1 << 1):
+            new_seq1[s1] = (seq1[i - 1])
+            new_seq2[s2] = 256 # '_'
+            edits2.append(s2)
+            gaps = gaps + 1
+
+        elif data & (1 << 1):
             ni = i
             nj = j - 1
             direction = (1 << 1)
-
-        if data & (1 << 0):
-            ni = i - 1
-            nj = j - 1
-            direction = (1 << 0)
-
-        if direction == (1 << 0):
-            s1 = s1 - 1
-            s2 = s2 - 1
-            new_seq1[s1] = (seq1[i - 1])
-            new_seq2[s2] = (seq2[j - 1])
-
-        if direction == (1 << 1):
             s1 = s1 - 1
             s2 = s2 - 1
 
@@ -144,14 +141,39 @@ def NeedlemanWunsch(seq1, seq2,S, g, e):
             new_seq2[s2] = (seq2[j - 1])
             gaps = gaps + 1
 
-        if direction == (1 << 2):
+        elif data & (1 << 0):
+            ni = i - 1
+            nj = j - 1
+            direction = (1 << 0)
             s1 = s1 - 1
             s2 = s2 - 1
-
             new_seq1[s1] = (seq1[i - 1])
-            new_seq2[s2] = 256 # '_'
-            edits2.append(s2)
-            gaps = gaps + 1
+            new_seq2[s2] = (seq2[j - 1])
+
+
+        # if direction == (1 << 0):
+        #     s1 = s1 - 1
+        #     s2 = s2 - 1
+        #     new_seq1[s1] = (seq1[i - 1])
+        #     new_seq2[s2] = (seq2[j - 1])
+
+        # if direction == (1 << 1):
+        #     s1 = s1 - 1
+        #     s2 = s2 - 1
+        #
+        #     edits1.append(s1)
+        #     new_seq1[s1] = 256 # '_'
+        #     new_seq2[s2] = (seq2[j - 1])
+        #     gaps = gaps + 1
+
+        # if direction == (1 << 2):
+        #     s1 = s1 - 1
+        #     s2 = s2 - 1
+        #
+        #     new_seq1[s1] = (seq1[i - 1])
+        #     new_seq2[s2] = 256 # '_'
+        #     edits2.append(s2)
+        #     gaps = gaps + 1
 
         i = ni
         j = nj

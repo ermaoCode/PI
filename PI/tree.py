@@ -12,6 +12,7 @@ Licensed under the LGPL
 
 from pydot import *
 
+# tree node: (id, distance between two child, (pktnum, sequence), None)
 class Tree:
 
     def __init__(self):

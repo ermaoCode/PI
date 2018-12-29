@@ -19,7 +19,7 @@ def main():
     print "Copyright (c) 2004 Baseline Research\n"
 
     # Defaults
-    format = None
+    file_format = "pcap"
     weight = 1.0
     graph = False
 
@@ -33,9 +33,9 @@ def main():
 
     for o,a in opts:
         if o in ["-p"]:
-            format = "pcap"
+            file_format = "pcap"
         elif o in ["-a"]:
-            format = "ascii"
+            file_format = "ascii"
         elif o in ["-w"]:
             weight = float(a)
         elif o in ["-g"]:
@@ -60,20 +60,20 @@ def main():
     #
     # Open file and get sequences
     #
-    if format == "pcap":
+    if file_format == "pcap":
         try:
             sequences = input.Pcap(file)
         except:
             print "FATAL: Error opening '%s'" % file
             sys.exit(-1)
-    elif format == "ascii":
+    elif file_format == "ascii":
         try:
             sequences = input.ASCII(file)
         except:
             print "FATAL: Error opening '%s'" % file
             sys.exit(-1)
     else:
-        print "FATAL: Specify file format"
+        print "FATAL: Specify file file_format"
         sys.exit(-1)
 
     if len(sequences) == 0:

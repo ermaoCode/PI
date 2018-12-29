@@ -57,8 +57,12 @@ class Phylogeny:
 
 class UPGMA(Phylogeny):
 
-    """UPGMA tree construction method"""
+    """UPGMA tree construction method
+        Tree Node: (id, distance between two child, (pktnum, sequence), None)
 
+    """
+
+    # generate node tree
     def _go(self):
 
         # Universal set
@@ -126,6 +130,8 @@ class UPGMA(Phylogeny):
             d = self._distance(A.getRight(), B) + self._distance(A.getLeft(), B)
             return d / 2.0
 
+    # cluster depend on the min distance between left-child and right-child. Default min distance is 1
+    # which means there will be only one cluster
     def _cluster(self, root):
 
         if root.getIsLeaf():
