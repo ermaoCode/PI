@@ -58,7 +58,7 @@ class Phylogeny:
 class UPGMA(Phylogeny):
 
     """UPGMA tree construction method
-        Tree Node: (id, distance between two child, (pktnum, sequence), None)
+        Tree Node: (id, distance between two child, sequence, edit)
 
     """
 

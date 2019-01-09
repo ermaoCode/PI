@@ -1,6 +1,4 @@
-#!/usr/bin/python -u
 
-#
 # Protocol Informatics Prototype
 # Written by Marshall Beddoe <mbeddoe@baselineresearch.net>
 # Copyright (c) 2004 Baseline Research
@@ -50,11 +48,9 @@ def main():
         print "FATAL: Weight must be between 0 and 1"
         sys.exit(-1)
 
-    file = sys.argv[len(sys.argv) - 1]
+    input_file = sys.argv[len(sys.argv) - 1]
 
-    try:
-        file
-    except:
+    if not input_file:
         usage()
 
     #
@@ -62,25 +58,25 @@ def main():
     #
     if file_format == "pcap":
         try:
-            sequences = input.Pcap(file)
+            sequences = input.Pcap(input_file)
         except:
-            print "FATAL: Error opening '%s'" % file
+            print "FATAL: Error opening '%s'" % input_file
             sys.exit(-1)
     elif file_format == "ascii":
         try:
-            sequences = input.ASCII(file)
+            sequences = input.ASCII(input_file)
         except:
-            print "FATAL: Error opening '%s'" % file
+            print "FATAL: Error opening '%s'" % input_file
             sys.exit(-1)
     else:
         print "FATAL: Specify file file_format"
         sys.exit(-1)
 
     if len(sequences) == 0:
-        print "FATAL: No sequences found in '%s'" % file
+        print "FATAL: No sequences found in '%s'" % input_file
         sys.exit(-1)
     else:
-        print "Found %d unique sequences in '%s'" % (len(sequences), file)
+        print "Found %d unique sequences in '%s'" % (len(sequences), input_file)
 
     #
     # Create distance matrix (LocalAlignment, PairwiseIdentity, Entropic)
