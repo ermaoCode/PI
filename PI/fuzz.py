@@ -162,6 +162,37 @@ class Fuzz:
                     "default_value": protocol_field.length
                 }
             ]
+        elif protocol_field.primitive_type == "random":
+            res["primitive"] = [{
+                "name" : "primitive-type",
+                "type" : "static",
+                "default_value" : "random_data"
+            }, {
+                "name" : "primitive-value",
+                "type" : "string",
+                "default_value" : protocol_field.default_value
+            }, {
+                "name" : "fuzzable",
+                "type" : "enum",
+                "enum_list" : ["True", "False"],
+                "default_value" : "True"
+            }, {
+                "name" : "min-width",
+                "type" : "digit",
+                "default_value" : 0
+            }, {
+                "name" : "max-width",
+                "type" : "digit",
+                "default_value" : protocol_field.length
+            }, {
+                "name" : "max-mutation",
+                "type" : "digit",
+                "default_value" : 100
+            }, {
+                "name" : "fuzzing-type",
+                "type" : "static",
+                "default_value" : "random"
+            }]
         return res
 
 

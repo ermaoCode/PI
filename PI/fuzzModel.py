@@ -177,6 +177,12 @@ class FuzzModel:
 
                 self.insert_fuzz_field(offset, field_length, "byte", default_value)
 
+        if not self.is_fixed_length:
+            # if this is a not fixed length protocol,then we can add a random data
+            max_length = 100
+            default_value = 0
+            self.insert_fuzz_field(self.protocol_len, max_length, "random", default_value)
+
         self.protocol_fields.sort()
         print "finish"
 
