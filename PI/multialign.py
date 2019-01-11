@@ -112,6 +112,8 @@ class NeedlemanWunsch(Multialign):
         if root.getLeft() == None and root.getRight() == None:
             seq1 = root.getValue()[2]
             id = root.getValue()[0]
+            # # make a copy
+            # new = list(seq1)
             new = seq1
 
             for i in range(len(edits)):

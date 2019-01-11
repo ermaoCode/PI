@@ -57,8 +57,9 @@ class Pcap(Input):
         self.pktNumber = 0
         self.offset = offset
 
-        self.port = []
+        self.port = 0
         self.protocol = ""
+        self.ip_p = 0
 
         try:
             pd = open_offline(filename)
@@ -80,7 +81,7 @@ class Pcap(Input):
 
         ip_hl = ord(iphdr[0]) & 0x0f                    # header length
         ip_len = (ord(iphdr[2]) << 8) | ord(iphdr[3])   # total length
-        ip_p = ord(iphdr[9])                            # protocol type
+        self.ip_p = ord(iphdr[9])                            # protocol type
         ip_srcip = inet_ntoa(iphdr[12:16])              # source ip address
         ip_dstip = inet_ntoa(iphdr[16:20])              # dest ip address
 
@@ -88,7 +89,7 @@ class Pcap(Input):
         self.protocol = "ip"
 
         # Parse TCP if applicable
-        if ip_p == 6:
+        if self.ip_p == 6:
             tcphdr = pkt[offset:]
 
             th_sport = (ord(tcphdr[0]) << 8) | ord(tcphdr[1])   # source port
@@ -98,15 +99,17 @@ class Pcap(Input):
             if not self.protocol:
                 self.protocol = "tcp"
             # default system port is 1~1024
-            if th_dport <= 1024 and th_dport not in self.port:
-                self.port.append(th_dport)
-            if th_sport <= 1024 and th_sport not in self.port:
-                self.port.append(th_sport)
+            # if th_dport <= 1024 and th_dport not in self.port:
+            #     self.port.append(th_dport)
+            # if th_sport <= 1024 and th_sport not in self.port:
+            #     self.port.append(th_sport)
+            if th_dport <= 1024 :
+                self.port = th_dport
 
             offset += (th_off * 4)
 
         # Parse UDP if applicable
-        elif ip_p == 17:
+        elif self.ip_p == 17:
             udphdr = pkt[offset:]
 
             uh_sport = (ord(udphdr[0]) << 8) | ord(udphdr[1])   # source port
@@ -115,11 +118,12 @@ class Pcap(Input):
             if not self.protocol:
                 self.protocol = "udp"
             # default system port is 1~1024
-            if uh_dport <= 1024 and uh_dport not in self.port:
-                self.port.append(uh_dport)
-            if uh_sport <= 1024 and uh_sport not in self.port:
-                self.port.append(uh_sport)
-
+            # if uh_dport <= 1024 and uh_dport not in self.port:
+            #     self.port.append(uh_dport)
+            # if uh_sport <= 1024 and uh_sport not in self.port:
+            #     self.port.append(uh_sport)
+            if uh_dport <= 1024 :
+                self.port = uh_dport
             offset += 8
 
         # Parse out application layer

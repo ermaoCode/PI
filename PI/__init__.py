@@ -1,1 +1,1 @@
-__all__ = [ "input", "distance", "phylogeny", "multialign", "output" ]
+__all__ = [ "input", "distance", "phylogeny", "multialign", "output", "fuzz" ]
