@@ -1,0 +1,113 @@
+<script type="text/javascript"> data={"cluster_1": {"test": {"status": [{"blocks": [{"block_name": "b1", "block_item": [{"primitive": [{"default_value": "byte", "type": "static", "name": "primitive-type"}, {"default_value": "\b", "type": "string", "name": "primitive-value"}, {"default_value": "True", "type": "enum", "name": "fuzzable", "enum_list": ["True", "False"]}, {"default_value": 1, "type": "digit", "name": "width"}, {"default_value": "BIG_ENDIAN", "type": "enum", "name": "endian", "enum_list": ["BIG_ENDIAN", "LITTLE_ENDIAN"]}, {"default_value": "sampling", "type": "enum", "name": "fuzzing-type", "enum_list": ["exhaustive", "sampling"]}]}, {"primitive": [{"default_value": "static", "type": "static", "name": "primitive-type"}, {"default_value": "\u0000", "type": "string", "name": "primitive-value"}, {"default_value": 1, "type": "static", "name": "width"}]}, {"primitive": [{"default_value": "checksum_field", "type": "static", "name": "primitive-type"}, {"default_value": "total", "type": "static", "name": "target-block"}, {"default_value": "ipv4", "type": "static", "name": "checksum-algorithm"}, {"default_value": 2, "type": "static", "name": "width"}]}, {"primitive": [{"default_value": "static", "type": "static", "name": "primitive-type"}, {"default_value": ";", "type": "string", "name": "primitive-value"}, {"default_value": 1, "type": "static", "name": "width"}]}, {"primitive": [{"default_value": "byte", "type": "static", "name": "primitive-type"}, {"default_value": "ç", "type": "string", "name": "primitive-value"}, {"default_value": "True", "type": "enum", "name": "fuzzable", "enum_list": ["True", "False"]}, {"default_value": 1, "type": "digit", "name": "width"}, {"default_value": "BIG_ENDIAN", "type": "enum", "name": "endian", "enum_list": ["BIG_ENDIAN", "LITTLE_ENDIAN"]}, {"default_value": "sampling", "type": "enum", "name": "fuzzing-type", "enum_list": ["exhaustive", "sampling"]}]}, {"primitive": [{"default_value": "static", "type": "static", "name": "primitive-type"}, {"default_value": "\u0000", "type": "string", "name": "primitive-value"}, {"default_value": 1, "type": "static", "name": "width"}]}, {"primitive": [{"default_value": "byte", "type": "static", "name": "primitive-type"}, {"default_value": "\u0001\r]", "type": "string", "name": "primitive-value"}, {"default_value": "True", "type": "enum", "name": "fuzzable", "enum_list": ["True", "False"]}, {"default_value": 3, "type": "digit", "name": "width"}, {"default_value": "BIG_ENDIAN", "type": "enum", "name": "endian", "enum_list": ["BIG_ENDIAN", "LITTLE_ENDIAN"]}, {"default_value": "sampling", "type": "enum", "name": "fuzzing-type", "enum_list": ["exhaustive", "sampling"]}]}, {"primitive": [{"default_value": "static", "type": "static", "name": "primitive-type"}, {"default_value": "7\\\u0000\u0000\u0000\u0000", "type": "string", "name": "primitive-value"}, {"default_value": 6, "type": "static", "name": "width"}]}, {"primitive": [{"default_value": "byte", "type": "static", "name": "primitive-type"}, {"default_value": "4›\r", "type": "string", "name": "primitive-value"}, {"default_value": "True", "type": "enum", "name": "fuzzable", "enum_list": ["True", "False"]}, {"default_value": 4, "type": "digit", "name": "width"}, {"default_value": "BIG_ENDIAN", "type": "enum", "name": "endian", "enum_list": ["BIG_ENDIAN", "LITTLE_ENDIAN"]}, {"default_value": "sampling", "type": "enum", "name": "fuzzing-type", "enum_list": ["exhaustive", "sampling"]}]}, {"primitive": [{"default_value": "static", "type": "static", "name": "primitive-type"}, {"default_value": "\u0000\u0000\u0000\u0000\u0000\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001e\u001f !\"#$%&'()*+,-./01234567", "type": "string", "name": "primitive-value"}, {"default_value": 45, "type": "static", "name": "width"}]}]}], "status_name": "DefaultStatus"}], "timestamp": 1547292223474, "session": {"target": {"ip": "", "protocol": "ip", "port": 0, "ip_p": 1}}, "testname": "AutoScript1547292223474", "description": "Autogen fuzzing script"}}}</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fuzzing Structure</title>
+</head>
+<body>
+<style type="text/css">
+.byteHeader {width : 50; }
+tr {height: 50; text-align: center;}
+</style>
+
+
+<script type="text/javascript">
+  
+// the pos class
+  function pod(width, type){
+    this.width = width
+    this.type = type
+  }
+
+  function get_attr_by_key(x, key){
+    for (var i = x.length - 1; i >= 0; i--) {
+      if (x[i]["name"] == key ){
+        return x[i]["default_value"];
+      }
+    }
+    return -1;
+  }
+
+  function showTable(key) {
+    wi('<table border="1" style="border-collapse:collapse" id="'+key+'"><tbody id="table">');
+
+    wi('<tr>')
+    var bg = 'white';
+    for (var i=1; i<totallen; i++){
+      wi('<td bgcolor=' + bg + '  class="byteHeader">' + i + '</td>');
+    }
+    if (primitive_pods[primitive_pods.length-1].type == "random_data"){
+      wi('<td bgcolor=' + bg + '  class="byteHeader">' + i + '......</td>');
+    }else {
+      wi('<td bgcolor=' + bg + '  class="byteHeader">' + i + '</td>');
+    }
+
+    wi('</tr>');
+
+    wi('<tr>');
+    var bg = '#F4FAC7';
+    for (var i=0; i<block_pods.length; i++){
+      wi('<td bgcolor=' + bg + '  colspan="' + block_pods[i].width +'">block ' + i + '</td>');
+    }
+    wi('</tr>');
+
+    wi('<tr>');
+    var bg = 'red';
+    for (var i=0; i<primitive_pods.length; i++){
+      value = primitive_pods[i].type
+      if (value == "static"){
+        bg = '#898e8e'
+      }else if (value == "byte"){
+        bg = '#3f8646'
+      }else if (value == "random_data"){
+        bg = '#7a87d8'
+      }else if (value == "checksum_field"){
+        bg = '#36bf3e'
+      }else if (value == "length_field"){
+        bg = '#bfb836'
+      }
+      wi('<td bgcolor=' + bg + '  colspan="' + primitive_pods[i].width +'">'+value+'</td>')
+    }
+    wi('</tr>');
+
+
+    wi('</tbody></table><br />');
+  }
+
+  function wi(str) {
+    return document.write(str);
+  }
+
+  for (var key in data) {
+
+    wi("<h3>" + key + "</h3>");
+    blocks = data[key]["test"]["status"][0]["blocks"];
+    var totallen = 0;
+    var block_pods = [];
+    var primitive_pods = [];
+
+    for (var i = 0; i < blocks.length; i++){
+      var b = new pod(0, "block");
+      block_pods.push(b);
+
+      var pris = blocks[i]["block_item"];
+      for (var j = 0; j < pris.length; j++){
+        var pri = new pod(get_attr_by_key(pris[j]["primitive"], "width"), get_attr_by_key(pris[j]["primitive"], "primitive-type"));
+
+        primitive_pods.push(pri);
+        block_pods[i].width += pri.width;
+        totallen += pri.width;
+      }
+    }
+
+    showTable(key);
+    document.getElementById(key).style.width=(50*totallen)+"px";
+  }
+
+  
+    
+</script>
+
+</body>
+</html>

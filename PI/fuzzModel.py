@@ -164,9 +164,12 @@ class FuzzModel:
 
                 default_value = ""
                 for j in range(field_length):
-                    if self.consensus[offset+j]==256:
+                    if self.consensus[offset+j] == 256:
                         # gap
                         pass
+                    elif self.consensus[offset+j] == 257:
+                        # totally different
+                        default_value += chr(0)
                     else:
                         default_value += chr(self.consensus[offset+j])
                         # # default_value += struct.pack("B", self.consensus[offset+j])
@@ -181,7 +184,7 @@ class FuzzModel:
             # if this is a not fixed length protocol,then we can add a random data
             max_length = 100
             default_value = 0
-            self.insert_fuzz_field(self.protocol_len, max_length, "random", default_value)
+            self.protocol_fields.append(ProtocolField(self.protocol_len, max_length, "random", default_value))
 
         self.protocol_fields.sort()
         print "finish"

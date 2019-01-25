@@ -46,5 +46,5 @@ setup(
     packages = ["PI"],
     include_dirs = [NU.get_include()], 
     ext_modules=[
-        PIExtension("PI.align")],**distutils_extras
+        PIExtension("PI.align")], requires=['pcapy'],**distutils_extras
 )

@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fuzzing Structure</title>
+</head>
+<body>
+<style type="text/css">
+.byteHeader {width : 50; }
+tr {height: 50; text-align: center;}
+</style>
+
+
+<script type="text/javascript">
+  
+// the pos class
+  function pod(width, type){
+    this.width = width
+    this.type = type
+  }
+
+  function get_attr_by_key(x, key){
+    for (var i = x.length - 1; i >= 0; i--) {
+      if (x[i]["name"] == key ){
+        return x[i]["default_value"];
+      }
+    }
+    return -1;
+  }
+
+  function showTable(key) {
+    wi('<table border="1" style="border-collapse:collapse" id="'+key+'"><tbody id="table">');
+
+    wi('<tr>')
+    var bg = 'white';
+    for (var i=1; i<totallen; i++){
+      wi('<td bgcolor=' + bg + '  class="byteHeader">' + i + '</td>');
+    }
+    if (primitive_pods[primitive_pods.length-1].type == "random_data"){
+      wi('<td bgcolor=' + bg + '  class="byteHeader">' + i + '......</td>');
+    }else {
+      wi('<td bgcolor=' + bg + '  class="byteHeader">' + i + '</td>');
+    }
+
+    wi('</tr>');
+
+    wi('<tr>');
+    var bg = '#F4FAC7';
+    for (var i=0; i<block_pods.length; i++){
+      wi('<td bgcolor=' + bg + '  colspan="' + block_pods[i].width +'">block ' + i + '</td>');
+    }
+    wi('</tr>');
+
+    wi('<tr>');
+    var bg = 'red';
+    for (var i=0; i<primitive_pods.length; i++){
+      value = primitive_pods[i].type
+      if (value == "static"){
+        bg = '#898e8e'
+      }else if (value == "byte"){
+        bg = '#3f8646'
+      }else if (value == "random_data"){
+        bg = '#7a87d8'
+      }else if (value == "checksum_field"){
+        bg = '#36bf3e'
+      }else if (value == "length_field"){
+        bg = '#bfb836'
+      }
+      wi('<td bgcolor=' + bg + '  colspan="' + primitive_pods[i].width +'">'+value+'</td>')
+    }
+    wi('</tr>');
+
+
+    wi('</tbody></table><br />');
+  }
+
+  function wi(str) {
+    return document.write(str);
+  }
+
+  for (var key in data) {
+    wi("<h3>" + key + "</h3>");
+    blocks = data[key]["test"]["status"][0]["blocks"];
+    var totallen = 0;
+    var block_pods = [];
+    var primitive_pods = [];
+
+    for (var i = 0; i < blocks.length; i++){
+      var b = new pod(0, "block");
+      block_pods.push(b);
+
+      var pris = blocks[i]["block_item"];
+      for (var j = 0; j < pris.length; j++){
+        var pri = new pod(get_attr_by_key(pris[j]["primitive"], "width"), get_attr_by_key(pris[j]["primitive"], "primitive-type"));
+
+        primitive_pods.push(pri);
+        block_pods[i].width += pri.width;
+        totallen += pri.width;
+      }
+    }
+
+    showTable();
+    document.getElementById(key).style.width=(50*totallen)+"px";
+  }
+
+  
+    
+</script>
+
+</body>
+</html>

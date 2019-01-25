@@ -10,7 +10,7 @@ Copyright (c) 2004 Baseline Research
 Licensed under the LGPL
 """
 
-from pcapy  import *
+import pcapy
 from socket import *
 from sets   import *
 
@@ -62,7 +62,7 @@ class Pcap(Input):
         self.ip_p = 0
 
         try:
-            pd = open_offline(filename)
+            pd = pcapy.open_offline(filename)
         except:
             raise IOError
 
@@ -96,8 +96,8 @@ class Pcap(Input):
             th_dport = (ord(tcphdr[2]) << 8) | ord(tcphdr[3])   # dest port
             th_off = ord(tcphdr[12]) >> 4                       # tcp offset
 
-            if not self.protocol:
-                self.protocol = "tcp"
+
+            self.protocol = "tcp"
             # default system port is 1~1024
             # if th_dport <= 1024 and th_dport not in self.port:
             #     self.port.append(th_dport)
@@ -115,8 +115,7 @@ class Pcap(Input):
             uh_sport = (ord(udphdr[0]) << 8) | ord(udphdr[1])   # source port
             uh_dport = (ord(udphdr[2]) << 8) | ord(udphdr[3])   # dest port
 
-            if not self.protocol:
-                self.protocol = "udp"
+            self.protocol = "udp"
             # default system port is 1~1024
             # if uh_dport <= 1024 and uh_dport not in self.port:
             #     self.port.append(uh_dport)

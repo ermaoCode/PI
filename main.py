@@ -1,75 +1,62 @@
 
-# Protocol Informatics Prototype
-# Written by Marshall Beddoe <mbeddoe@baselineresearch.net>
-# Copyright (c) 2004 Baseline Research
-#
-# Licensed under the LGPL
-#
-
-from PI import *
-import sys, getopt
+# from PI import *
+import PI.input as input
+import PI.distance as distance
+import PI.phylogeny as phylogeny
+import PI.multialign as multialign
+import PI.output as output
+import PI.fuzz as fuzz
+import sys
 import datetime
+import argparse
+import os
+import json
+import pcapy
 
 def main():
 
-    print "Protocol Informatics Prototype (v0.01 beta)"
-    print "Written by Marshall Beddoe <mbeddoe@baselineresearch.net>"
-    print "Copyright (c) 2004 Baseline Research\n"
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-g", "--graph", help="generate a phylogeny tree graph", action="store_true")
+    parser.add_argument("--html", help="output the HTML format", action="store_true")
+    parser.add_argument("--htmltemplate", help="HTML template path")
+    parser.add_argument("-w", "--weight", help="the weight for dividing clusters", type=float)
+    parser.add_argument("-o", "--output_dir", help="the output dir name")
+    parser.add_argument("input_file", help="input net trace file")
+    args = parser.parse_args()
 
-    # Defaults
-    file_format = "pcap"
     weight = 1.0
     graph = False
+    output_dir = "test"
+    html_format = False
+    html_templte_path = "./output/Template.html"
 
-    #
-    # Parse command line options and do sanity checking on arguments
-    #
-    try:
-        (opts, args) = getopt.getopt(sys.argv[1:], "pagw:")
-    except:
-        usage()
+    if args.graph:
+        graph = True
+    if args.html:
+        html_format = True
 
-    for o,a in opts:
-        if o in ["-p"]:
-            file_format = "pcap"
-        elif o in ["-a"]:
-            file_format = "ascii"
-        elif o in ["-w"]:
-            weight = float(a)
-        elif o in ["-g"]:
-            graph = True
-        else:
-            usage()
+    if args.weight:
+        weight = args.weight
+        if weight < 0.0 or weight > 1.0:
+            print "FATAL: Weight must be between 0 and 1"
+            sys.exit(-1)
+    if args.output_dir:
+        output_dir = args.output_dir
 
-    if len(args) == 0:
-        usage()
+    if args.htmltemplate:
+        html_templte_path = args.htmltemplate
 
-    if weight < 0.0 or weight > 1.0:
-        print "FATAL: Weight must be between 0 and 1"
-        sys.exit(-1)
+    input_file = args.input_file
 
-    input_file = sys.argv[len(sys.argv) - 1]
-
-    if not input_file:
-        usage()
+    print "Generating Fuzzing Script..."
 
     #
     # Open file and get sequences
     #
-    if file_format == "pcap":
-        try:
-            sequences = input.Pcap(input_file)
-        except:
-            print "FATAL: Error opening '%s'" % input_file
-            sys.exit(-1)
-    elif file_format == "ascii":
-        try:
-            sequences = input.ASCII(input_file)
-        except:
-            print "FATAL: Error opening '%s'" % input_file
-            sys.exit(-1)
-    else:
-        print "FATAL: Specify file file_format"
+    try:
+        sequences = input.Pcap(input_file)
+    except:
+        print "FATAL: Error opening '%s'" % input_file
         sys.exit(-1)
 
     if len(sequences) == 0:
@@ -123,21 +110,55 @@ def main():
     #
     # Display each cluster of aligned sequences
     #
+    data = {}
+    output_path = output_dir
+
+    if not html_format:
+        output_path = "./output/" + output_dir
+        if os.path.exists(output_path):
+            ls = os.listdir(output_path)
+            for i in ls:
+                c_path = os.path.join(output_path, i)
+                if not os.path.isdir(c_path):
+                    os.remove(c_path)
+        else:
+            os.mkdir(output_path)
     i = 1
     for seqs in alist:
-        print "Output of cluster %d" % i
-        output.Ansi(seqs)
+        cluster_name = "cluster_" + str(i)
+        print "Generating "+cluster_name
+        if not html_format:
+            output.Ansi(seqs).go()
+        else:
+            output.Html(seqs).go()
+
+        f = fuzz.Fuzz(seqs, protocol=sequences.protocol, ip_p=sequences.ip_p, port=sequences.port,
+                      output=output_dir+"-"+str(i)+".json")
+
+        target_json = output_path + "/" + cluster_name + ".json"
+        data[cluster_name] = f.go()
+
+        print target_json
+        with open(target_json, "w") as f:
+            json.dump(data[cluster_name], f, ensure_ascii=False)
+
         i += 1
         print ""
 
-def usage():
-    print "usage: %s [-gpa] [-w <weight>] <sequence file>" % \
-        sys.argv[0]
-    print "       -g\toutput graphviz of phylogenetic trees"
-    print "       -p\tpcap format"
-    print "       -a\tascii format"
-    print "       -w\tdifference weight for clustering"
-    sys.exit(-1)
+    print "Write json file completed!"
+
+    s = json.dumps(data, ensure_ascii=False)
+    s = '<script type="text/javascript"> data=' + s + '</script>'
+    with open(args.htmltemplate, "r") as f:
+        s += f.read()
+
+    if not html_format:
+        with open(output_path+"Template.html", "w") as f:
+            f.write(s)
+    else:
+        print "<br><br>"
+        print s
+
 
 if __name__ == "__main__":
     now = datetime.datetime.now()

@@ -17,9 +17,8 @@ class Output:
 
         self.sequences = sequences
         self.consensus = []
-        self._go()
 
-    def _go(self):
+    def go(self):
         pass
 
 class Ansi(Output):
@@ -34,10 +33,11 @@ class Ansi(Output):
         self.zero = "\033[45;30m%s\033[0m"
         self.bit = "\033[46;30m%s\033[0m"
         self.default = "\033[47;30m%s\033[0m"
+        self.newline = "\n"
 
         Output.__init__(self, sequences)
 
-    def _go(self):
+    def go(self):
 
         seqLength = len(self.sequences[0][1])
         rounds = seqLength / 18
@@ -64,7 +64,7 @@ class Ansi(Output):
                         print self.zero % "x00",
                     else:
                         print self.default % "x%02x" % byte,
-                print ""
+                print self.newline,
 
             # Calculate datatype consensus
 
@@ -76,7 +76,7 @@ class Ansi(Output):
                 dt = self._dtConsensus(column)
                 print dt,
                 dtConsensus.append(dt)
-            print ""
+            print self.newline,
 
             print "MT  ",
             for j in range(start, end):
@@ -86,7 +86,7 @@ class Ansi(Output):
                 rate = self._mutationRate(column)
                 print "%03d" % (rate * 100),
                 mtConsensus.append(rate)
-            print "\n"
+            print self.newline+self.newline,
 
             start += 18
             end += 18
@@ -105,7 +105,7 @@ class Ansi(Output):
                         print self.zero % "x00",
                     else:
                         print self.default % "x%02x" % byte,
-                print ""
+                print self.newline,
 
             print "DT  ",
             for j in range(start, start + remainder):
@@ -115,7 +115,7 @@ class Ansi(Output):
                 dt = self._dtConsensus(column)
                 print dt,
                 dtConsensus.append(dt)
-            print ""
+            print self.newline,
 
             print "MT  ",
             for j in range(start, start + remainder):
@@ -125,7 +125,7 @@ class Ansi(Output):
                 rate = self._mutationRate(column)
                 mtConsensus.append(rate)
                 print "%03d" % (rate * 100),
-            print ""
+            print self.newline,
 
         # Calculate consensus sequence
         l = len(self.sequences[0][1])
@@ -184,17 +184,17 @@ class Ansi(Output):
                     print self.zero % "x00",
                 else:
                     print self.default % "x%02x" % byte,
-            print ""
+            print self.newline,
 
             print "DT  ",
             for byte,type,rate in real[start:end]:
                 print type,
-            print ""
+            print self.newline,
 
             print "MT  ",
             for byte,type,rate in real[start:end]:
                 print "%03d" % (rate * 100),
-            print "\n"
+            print self.newline+self.newline,
 
             start += 18
             end += 18
@@ -214,17 +214,17 @@ class Ansi(Output):
                     print self.zero % "x00",
                 else:
                     print self.default % "x%02x" % byte,
-            print ""
+            print self.newline,
 
             print "DT  ",
             for byte,type,rate in real[start:end]:
                 print type,
-            print ""
+            print self.newline,
 
             print "MT  ",
             for byte,type,rate in real[start:end]:
                 print "%03d" % (rate * 100),
-            print ""
+            print self.newline,
 
     def _dtConsensus(self, data):
         histogram = {}
@@ -287,3 +287,19 @@ class Ansi(Output):
             rate = len(items) * 1.0 / len(data) * 1.0
 
         return rate
+
+
+class Html(Ansi):
+
+    def __init__(self, sequences):
+        Ansi.__init__(self, sequences)
+
+        # Color defaults for composition
+        self.gap = "%s"
+        self.printable = "%s"
+        self.space = "%s"
+        self.binary = "%s"
+        self.zero = "%s"
+        self.bit = "%s"
+        self.default = "%s"
+        self.newline = "<br>"

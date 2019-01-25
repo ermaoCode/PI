@@ -1,4 +1,3 @@
-
 """
 Fuzz module
 Generate fuzzing script
@@ -8,6 +7,7 @@ Written by Jennings Mao <maojianling@ict.ac.cn>
 import time
 import fuzzModel
 import json
+
 
 class Fuzz:
 
@@ -22,14 +22,14 @@ class Fuzz:
         self.output = output
 
         self.gen_json_template()
-        self._go()
+        # self._go()
 
     def gen_json_template(self):
         self.json_result["test"] = {}
-        now = int(time.time()*1000)
+        now = int(time.time() * 1000)
 
         self.json_result["test"]["timestamp"] = now
-        self.json_result["test"]["testname"] = "AutoScript"+str(now)
+        self.json_result["test"]["testname"] = "AutoScript" + str(now)
         self.json_result["test"]["description"] = "Autogen fuzzing script"
 
         self.json_result["test"]["session"] = {}
@@ -47,12 +47,12 @@ class Fuzz:
         self.json_result["test"]["status"][0]["status_name"] = "DefaultStatus"
         self.json_result["test"]["status"][0]["blocks"] = []
 
-    def _go(self):
+    def go(self):
         fm = fuzzModel.FuzzModel(self.sequences)
         if fm.has_length_field and fm.length_block_offset != 0:
             # 2 block
-            b0 = {"block_name" : "b0", "block_item" : []}
-            b1 = {"block_name" : "b1", "block_item" : []}
+            b0 = {"block_name": "b0", "block_item": []}
+            b1 = {"block_name": "b1", "block_item": []}
             for protocol_field in fm.protocol_fields:
                 if protocol_field.offset < fm.length_block_offset:
                     b0["block_item"].append(self.gen_primitive_obj(protocol_field))
@@ -62,46 +62,47 @@ class Fuzz:
             self.json_result["test"]["status"][0]["blocks"].append(b1)
         else:
             # 1 block
-            b1 = {"block_name" : "b1", "block_item" : []}
+            b1 = {"block_name": "b1", "block_item": []}
             for protocol_field in fm.protocol_fields:
                 b1["block_item"].append(self.gen_primitive_obj(protocol_field))
             self.json_result["test"]["status"][0]["blocks"].append(b1)
 
-        with open(self.output, "w") as f:
-            json.dump(self.json_result, f, ensure_ascii=False)
-            print "Write json file completed!"
+        # with open(self.output, "w") as f:
+        #     json.dump(self.json_result, f, ensure_ascii=False)
+        #     print "Write json file completed!"
+        return self.json_result
 
     @staticmethod
     def gen_primitive_obj(protocol_field):
         res = {}
         if protocol_field.primitive_type == "byte":
             res["primitive"] = [{
-                "name" : "primitive-type",
-                "type" : "static",
-                "default_value" : "byte"
+                "name": "primitive-type",
+                "type": "static",
+                "default_value": "byte"
             }, {
-                "name" : "primitive-value",
-                "type" : "string",
-                "default_value" : protocol_field.default_value
+                "name": "primitive-value",
+                "type": "string",
+                "default_value": protocol_field.default_value
             }, {
-                "name" : "fuzzable",
-                "type" : "enum",
-                "enum_list" : ["True", "False"],
-                "default_value" : "True"
+                "name": "fuzzable",
+                "type": "enum",
+                "enum_list": ["True", "False"],
+                "default_value": "True"
             }, {
-                "name" : "width",
-                "type" : "digit",
-                "default_value" : protocol_field.length
+                "name": "width",
+                "type": "digit",
+                "default_value": protocol_field.length
             }, {
-                "name" : "endian",
-                "type" : "enum",
-                "enum_list" : ["BIG_ENDIAN", "LITTLE_ENDIAN"],
-                "default_value" : "BIG_ENDIAN"
+                "name": "endian",
+                "type": "enum",
+                "enum_list": ["BIG_ENDIAN", "LITTLE_ENDIAN"],
+                "default_value": "BIG_ENDIAN"
             }, {
-                "name" : "fuzzing-type",
-                "type" : "enum",
-                "enum_list" : ["exhaustive", "sampling"],
-                "default_value" : "sampling"
+                "name": "fuzzing-type",
+                "type": "enum",
+                "enum_list": ["exhaustive", "sampling"],
+                "default_value": "sampling"
             }]
         elif protocol_field.primitive_type == "static":
             res["primitive"] = [
@@ -160,39 +161,46 @@ class Fuzz:
                     "name": "width",
                     "type": "static",
                     "default_value": protocol_field.length
+                },
+                {
+                    "name": "offset",
+                    "type": "static",
+                    "default_value": protocol_field.length_block_offset
                 }
             ]
         elif protocol_field.primitive_type == "random":
             res["primitive"] = [{
-                "name" : "primitive-type",
-                "type" : "static",
-                "default_value" : "random_data"
+                "name": "primitive-type",
+                "type": "static",
+                "default_value": "random_data"
             }, {
-                "name" : "primitive-value",
-                "type" : "string",
-                "default_value" : protocol_field.default_value
+                "name": "primitive-value",
+                "type": "string",
+                "default_value": protocol_field.default_value
             }, {
-                "name" : "fuzzable",
-                "type" : "enum",
-                "enum_list" : ["True", "False"],
-                "default_value" : "True"
+                "name": "fuzzable",
+                "type": "enum",
+                "enum_list": ["True", "False"],
+                "default_value": "True"
             }, {
-                "name" : "min-width",
-                "type" : "digit",
-                "default_value" : 0
+                "name": "min-width",
+                "type": "digit",
+                "default_value": 0
             }, {
-                "name" : "max-width",
-                "type" : "digit",
-                "default_value" : protocol_field.length
+                "name": "max-width",
+                "type": "digit",
+                "default_value": protocol_field.length
             }, {
-                "name" : "max-mutation",
-                "type" : "digit",
-                "default_value" : 100
+                "name": "max-mutation",
+                "type": "digit",
+                "default_value": 100
             }, {
-                "name" : "fuzzing-type",
-                "type" : "static",
-                "default_value" : "random"
+                "name": "fuzzing-type",
+                "type": "static",
+                "default_value": "random"
+            }, {
+                "name": "width",
+                "type": "static",
+                "default_value": 1
             }]
         return res
-
-
