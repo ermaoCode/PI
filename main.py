@@ -26,7 +26,7 @@ def main():
 
     weight = 1.0
     graph = False
-    output_dir = "test"
+    output_dir = "./output/test/"
     html_format = False
     html_templte_path = "./output/Template.html"
 
@@ -111,18 +111,16 @@ def main():
     # Display each cluster of aligned sequences
     #
     data = {}
-    output_path = output_dir
 
-    if not html_format:
-        output_path = "./output/" + output_dir
-        if os.path.exists(output_path):
-            ls = os.listdir(output_path)
-            for i in ls:
-                c_path = os.path.join(output_path, i)
-                if not os.path.isdir(c_path):
-                    os.remove(c_path)
-        else:
-            os.mkdir(output_path)
+    output_path = output_dir
+    if os.path.exists(output_path):
+        ls = os.listdir(output_path)
+        for i in ls:
+            c_path = os.path.join(output_path, i)
+            if not os.path.isdir(c_path):
+                os.remove(c_path)
+    else:
+        os.mkdir(output_path)
     i = 1
     for seqs in alist:
         cluster_name = "cluster_" + str(i)
@@ -132,8 +130,7 @@ def main():
         else:
             output.Html(seqs).go()
 
-        f = fuzz.Fuzz(seqs, protocol=sequences.protocol, ip_p=sequences.ip_p, port=sequences.port,
-                      output=output_dir+"-"+str(i)+".json")
+        f = fuzz.Fuzz(seqs, protocol=sequences.protocol, ip_p=sequences.ip_p, port=sequences.port)
 
         target_json = output_path + "/" + cluster_name + ".json"
         data[cluster_name] = f.go()
@@ -149,8 +146,10 @@ def main():
 
     s = json.dumps(data, ensure_ascii=False)
     s = '<script type="text/javascript"> data=' + s + '</script>'
-    with open(args.htmltemplate, "r") as f:
-        s += f.read()
+
+    if args.htmltemplate:
+        with open(args.htmltemplate, "r") as f:
+            s += f.read()
 
     if not html_format:
         with open(output_path+"Template.html", "w") as f:

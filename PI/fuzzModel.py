@@ -162,21 +162,14 @@ class FuzzModel:
                     field_length += 1
                     i += 1
 
-                default_value = ""
+                # the default network endian is big endian
+                default_value = 0
                 for j in range(field_length):
                     if self.consensus[offset+j] == 256:
-                        # gap
-                        pass
-                    elif self.consensus[offset+j] == 257:
-                        # totally different
-                        default_value += chr(0)
+                        # use gap as "0"
+                        default_value = default_value << 8
                     else:
-                        default_value += chr(self.consensus[offset+j])
-                        # # default_value += struct.pack("B", self.consensus[offset+j])
-                        # tmp = hex(self.consensus[offset+j])[2:]
-                        # if len(tmp) == 1:
-                        #     tmp = "0" + tmp
-                        # default_value += "\\x"+tmp
+                        default_value = (default_value << 8) + self.consensus[offset+j]
 
                 self.insert_fuzz_field(offset, field_length, "byte", default_value)
 
