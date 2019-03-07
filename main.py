@@ -17,8 +17,8 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-g", "--graph", help="generate a phylogeny tree graph", action="store_true")
-    parser.add_argument("--html", help="output the HTML format", action="store_true")
-    parser.add_argument("--htmltemplate", help="HTML template path")
+    parser.add_argument("--html", help="whether output the HTML format (<br> instead of \\n)", action="store_true")
+    parser.add_argument("--htmltemplate", help="The path of HTML template file")
     parser.add_argument("-w", "--weight", help="the weight for dividing clusters", type=float)
     parser.add_argument("-o", "--output_dir", help="the output dir name")
     parser.add_argument("input_file", help="input net trace file")
