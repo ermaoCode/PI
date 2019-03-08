@@ -118,6 +118,34 @@ class Fuzz:
                     "default_value": protocol_field.length
                 }
             ]
+        elif protocol_field.primitive_type == "group":
+            res["primitive"] = [
+                {
+                    "name": "primitive-type",
+                    "type": "static",
+                    "default_value": "group"
+                },
+                {
+                    "name": "primitive-value",
+                    "type": "enum",
+                    "enum_list": protocol_field.default_value,
+                    "default_value": protocol_field.default_value[0]
+                },
+                {
+                    "name": "fuzzable",
+                    "type": "enum",
+                    "enum_list": [
+                        "True",
+                        "False"
+                    ],
+                    "default_value": "True"
+                },
+                {
+                    "name": "width",
+                    "type": "static",
+                    "default_value": "1"
+                }
+            ]
         elif protocol_field.primitive_type == "checksum":
             res["primitive"] = [
                 {

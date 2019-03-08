@@ -150,13 +150,12 @@ def main():
     if args.htmltemplate:
         with open(args.htmltemplate, "r") as f:
             s += f.read()
-
-    if not html_format:
-        with open(output_path+"Template.html", "w") as f:
+        with open(output_path+"/clusters.html", "w") as f:
             f.write(s)
-    else:
-        print "<br><br>"
-        print s
+
+        if html_format:
+            print "<br><br>"
+            print s
 
 
 if __name__ == "__main__":

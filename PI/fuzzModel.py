@@ -153,6 +153,15 @@ class FuzzModel:
                     self.insert_fuzz_field(i, 2, "checksum", 0, checksum_type="ipv4")
                 # TODO: add other checksum identification
 
+        # for i in range(self.protocol_len):
+        #     if not self.occupied_field[i] and self.mtConsensus[i] < 0.05:
+        #         group_items = []
+        #         for seq in self.sequences:
+        #             if seq[i] not in group_items:
+        #                 group_items.append(seq[i])
+        #         self.insert_fuzz_field(i, 1, "group", group_items)
+
+
         # add remain fields
         for i in range(self.protocol_len):
             if not self.occupied_field[i]:
