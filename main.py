@@ -138,7 +138,7 @@ def main():
         print target_json
         print data[cluster_name]
         with open(target_json, "w") as f:
-            json.dump(data[cluster_name], f, ensure_ascii=False)
+            json.dump(data[cluster_name], f)
             # a = json.dumps(data[cluster_name], ensure_ascii=False).encode("utf-8")
             # f.write(a)
 
@@ -147,7 +147,7 @@ def main():
 
     print "Write json file completed!"
 
-    s = json.dumps(data, ensure_ascii=False)
+    s = json.dumps(data)
     s = '<script type="text/javascript"> data=' + s + '</script>'
 
     if args.htmltemplate:

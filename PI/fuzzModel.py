@@ -138,7 +138,7 @@ class FuzzModel:
                     #     tmp = "0" + tmp
                     # default_value += "\x5cx"+tmp
                 # default_value = struct.pack("<"+"B"*field_length, *self.sequences[0][offset:offset+field_length])
-
+                default_value = default_value.decode("latin1")
                 self.insert_fuzz_field(offset, field_length, "static", default_value)
 
         # check checksum field
