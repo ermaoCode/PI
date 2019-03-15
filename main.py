@@ -136,8 +136,11 @@ def main():
         data[cluster_name] = f.go()
 
         print target_json
+        print data[cluster_name]
         with open(target_json, "w") as f:
             json.dump(data[cluster_name], f, ensure_ascii=False)
+            # a = json.dumps(data[cluster_name], ensure_ascii=False).encode("utf-8")
+            # f.write(a)
 
         i += 1
         print ""

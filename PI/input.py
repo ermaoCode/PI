@@ -81,7 +81,13 @@ class Pcap(Input):
 
         ip_hl = ord(iphdr[0]) & 0x0f                    # header length
         ip_len = (ord(iphdr[2]) << 8) | ord(iphdr[3])   # total length
-        self.ip_p = ord(iphdr[9])                            # protocol type
+
+        # determine the protocol information with the first package!!!!
+        if (self.ip_p == 0):
+            self.ip_p = ord(iphdr[9])                            # protocol type
+        elif self.ip_p != ord(iphdr[9]):
+            return
+
         ip_srcip = inet_ntoa(iphdr[12:16])              # source ip address
         ip_dstip = inet_ntoa(iphdr[16:20])              # dest ip address
 
@@ -131,8 +137,12 @@ class Pcap(Input):
         if seq_len <= 0:
             return
 
+        if len(pkt) <= offset:
+            return
+
         seq = pkt[offset:]
 
+        # get unique seq. Is it necessary?
         l = len(self.set)
         self.set.add(seq)
 

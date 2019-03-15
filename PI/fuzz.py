@@ -154,6 +154,11 @@ class Fuzz:
                     "default_value": "checksum_field"
                 },
                 {
+                    "name": "primitive-value",
+                    "type": "static",
+                    "default_value": "0"
+                },
+                {
                     "name": "target-block",
                     "type": "static",
                     "default_value": "total"
@@ -175,6 +180,11 @@ class Fuzz:
                     "name": "primitive-type",
                     "type": "static",
                     "default_value": "length_field"
+                },
+                {
+                    "name": "primitive-value",
+                    "type": "static",
+                    "default_value": "0"
                 },
                 {
                     "name": "target-block",
