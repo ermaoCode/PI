@@ -6,6 +6,7 @@ import PI.phylogeny as phylogeny
 import PI.multialign as multialign
 import PI.output as output
 import PI.fuzz as fuzz
+import PI.sumofpair as sp
 import sys
 import datetime
 import argparse
@@ -17,6 +18,7 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-g", "--graph", help="generate a phylogeny tree graph", action="store_true")
+    parser.add_argument("--spscore", help="get sp socre of sequence", action="store_true")
     parser.add_argument("--html", help="whether output the HTML format (<br> instead of \\n)", action="store_true")
     parser.add_argument("--htmltemplate", help="The path of HTML template file")
     parser.add_argument("-w", "--weight", help="the weight for dividing clusters", type=float)
@@ -129,6 +131,8 @@ def main():
             output.Ansi(seqs).go()
         else:
             output.Html(seqs).go()
+
+        print "Sum of pairs: " + str(sp.get_sp_score(seqs))
 
         f = fuzz.Fuzz(seqs, protocol=sequences.protocol, ip_p=sequences.ip_p, port=sequences.port)
 
