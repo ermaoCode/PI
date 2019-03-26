@@ -4,7 +4,7 @@ calculate the SP(sum of pair) score of aligned sequence.
 
 def cmp_char(c1, c2):
     if c1 == 256 and c2 == 256:
-        return 0
+        return -2
     if c1 == 256 and c2 != 256:
         return -1
     if c1 != 256 and c2 == 256:
@@ -13,7 +13,7 @@ def cmp_char(c1, c2):
     if c1 == c2:
         return 2
     else:
-        return -2
+        return -1
 
 
 def get_sp_score(sequence):
