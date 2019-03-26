@@ -39,7 +39,7 @@ def NeedlemanWunsch(seq1, seq2,S, g, e):
             if v3 > 255:
                 v3 = v3 >> 8
 
-            v1 = v1 + table[i][j]
+            v1 = v1 + table[i][j] - position_punish(i,j)
             v2 = v2 - e
             v3 = v3 - e
 
@@ -238,7 +238,7 @@ def SmithWaterman(seq1, seq2, S, g, e):
             if v3 > 255 or (v1 & 0xffffff00) == False:
                 v3 = v3 >> 8
 
-            v1 = v1 + table[i][j]
+            v1 = v1 + table[i][j] - position_punish(i,j)
             v2 = v2 - 2
             v3 = v3 - 2
 
@@ -359,3 +359,9 @@ def SmithWaterman(seq1, seq2, S, g, e):
         j = nj
 
     return (new_seq1, new_seq2, edits1, edits2, t_max, gaps)
+
+
+def position_punish(i, j):
+    if i > j:
+        return (i-j)/2
+    return (j-i)/2
