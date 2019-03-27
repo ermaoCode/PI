@@ -17,21 +17,26 @@ def cmp_char(c1, c2):
 
 
 def get_sp_score(sequence):
-    seq_len = len(sequence[0][1])
     seq_num = len(sequence)
+    max_seq_len = 0
+    for i in range(seq_num):
+        if len(sequence[i][1]) > max_seq_len:
+            max_seq_len = len(sequence[i][1])
+
+    # seq_len = len(sequence[0][1])
     SP_score = 0
 
-    last_pos = [seq_len-1] * seq_num
+    last_pos = [max_seq_len-1] * seq_num
 
     for i in range(seq_num):
 
         while last_pos[i] > 0:
-            if sequence[i][1][ last_pos[i] ] == 256:
+            if len(sequence[i][1]) <= last_pos[i] or sequence[i][1][ last_pos[i] ] == 256:
                 last_pos[i] -= 1
             else:
                 break
 
-    for col in range(seq_len):
+    for col in range(max_seq_len):
 
         for i in range(seq_num):
             for j in range(seq_num):

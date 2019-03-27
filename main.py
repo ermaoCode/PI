@@ -123,6 +123,17 @@ def main():
                 os.remove(c_path)
     else:
         os.mkdir(output_path)
+
+    # only out put score
+    i = 1
+    if args.spscore:
+        for seqs in alist:
+            cluster_name = "cluster_" + str(i)
+            print "Generating "+cluster_name
+            i += 1
+            print "Sum of pairs: " + str(sp.get_sp_score(seqs))
+        # return
+
     i = 1
     for seqs in alist:
         cluster_name = "cluster_" + str(i)
@@ -131,8 +142,6 @@ def main():
             output.Ansi(seqs).go()
         else:
             output.Html(seqs).go()
-
-        print "Sum of pairs: " + str(sp.get_sp_score(seqs))
 
         f = fuzz.Fuzz(seqs, protocol=sequences.protocol, ip_p=sequences.ip_p, port=sequences.port)
 
