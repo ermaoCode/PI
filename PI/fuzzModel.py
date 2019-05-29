@@ -103,6 +103,7 @@ class FuzzModel:
 
             self.consensus.append(v)
 
+        # TODO:remove gaps
         # check length field
         length_field_index = -1
         offset = 0
@@ -141,6 +142,7 @@ class FuzzModel:
                 default_value = default_value.decode("latin1")
                 self.insert_fuzz_field(offset, field_length, "static", default_value)
 
+        # TODO:remove gaps
         # check checksum field
         # find 2-byte checksum field
         for i in range(self.protocol_len - 1):

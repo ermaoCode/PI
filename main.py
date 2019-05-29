@@ -18,11 +18,12 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-g", "--graph", help="generate a phylogeny tree graph", action="store_true")
-    parser.add_argument("--spscore", help="get sp socre of sequence", action="store_true")
+    parser.add_argument("--spscore", help="get sp score of sequence", action="store_true")
     parser.add_argument("--html", help="whether output the HTML format (<br> instead of \\n)", action="store_true")
     parser.add_argument("--htmltemplate", help="The path of HTML template file")
     parser.add_argument("-w", "--weight", help="the weight for dividing clusters", type=float)
     parser.add_argument("-o", "--output_dir", help="the output dir name")
+    parser.add_argument("-f", "--output_filename", help="the output file name")
     parser.add_argument("input_file", help="input net trace file")
     args = parser.parse_args()
 
@@ -36,6 +37,10 @@ def main():
         graph = True
     if args.html:
         html_format = True
+
+    output_name = "cluster"
+    if args.output_filename:
+        output_name = args.output_filename
 
     if args.weight:
         weight = args.weight
@@ -134,9 +139,11 @@ def main():
             print "Sum of pairs: " + str(sp.get_sp_score(seqs))
         # return
 
-    i = 1
+    i = 0
     for seqs in alist:
-        cluster_name = "cluster_" + str(i)
+        cluster_name = output_name
+        if i > 0:
+            cluster_name = output_name + "_" + str(i)
         print "Generating "+cluster_name
         if not html_format:
             output.Ansi(seqs).go()
@@ -166,7 +173,7 @@ def main():
     if args.htmltemplate:
         with open(args.htmltemplate, "r") as f:
             s += f.read()
-        with open(output_path+"/clusters.html", "w") as f:
+        with open(output_path+"/"+output_name+".html", "w") as f:
             f.write(s)
 
         if html_format:

@@ -189,3 +189,4 @@ good as the data that is fed to it.
 
 ## generate binary
 
+pyinstaller main.py -n pcapanalysor
